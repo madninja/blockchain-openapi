@@ -46,8 +46,7 @@ paths:
           name: cursor
           description: Cursor for next page of results
       tags:
-        - block
-        - list
+        - blocks
     parameters: []
   '/v1/blocks/{height}':
     parameters:
@@ -59,8 +58,6 @@ paths:
         description: Height for block to fetch
     get:
       summary: Block by Height
-      tags:
-        - block
       responses:
         '200':
           description: OK
@@ -81,13 +78,13 @@ paths:
         Retrieves a block with it's transactions at a given block height.
 
         Transactions for a block are paged. A `cursor` field will be in the response when more results are available
+      tags:
+        - blocks
 components:
   schemas:
     Hotspot:
       title: Hotspot
       type: object
-      x-tags:
-        - hotspot
       x-examples:
         hotspot:
           score_update_height: 273371
@@ -122,6 +119,9 @@ components:
       required:
         - address
       description: 'A hotspot creates coverage in a location. In order to earn tokens it needs to be added to the blockchain associated with a given owner wallet. To fully participate a hotspot also needs to be asserted on the blockchain at a specific location. '
+      x-tags:
+        - hotspots
+        - model
     Block-Outline:
       title: Block Descriptor
       type: object
@@ -151,14 +151,11 @@ components:
         - prev_hash
         - transaction_count
       x-tags:
-        - block
-        - descriptor
+        - blocks
+        - model
     Block-Detail:
       title: Block Details
       type: object
-      x-tags:
-        - block
-        - descriptor  securitySchemes: {}
       x-examples: {}
       description: 'A block buckets togeter a number of transactions and is constructed by the currently elected consensus group. Block details adds a list of transactions to the block '
       properties:
@@ -181,3 +178,6 @@ components:
         - hash
         - time
         - heiight
+      x-tags:
+        - blocks
+        - model
