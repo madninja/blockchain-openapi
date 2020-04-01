@@ -1,0 +1,183 @@
+openapi: 3.0.0
+info:
+  title: Helium Blockchain API
+  version: '1.0'
+  license:
+    name: Apache 2.0
+  contact:
+    url: 'https://helium.com'
+    email: info@helium.com
+  description: 'The Helium API offers a conveninent REST API to contents of the Helium Blockchain.  '
+servers:
+  - url: 'https://api.helium.wtf'
+    description: dev
+  - url: 'https://api.helium.io'
+    description: prod
+paths:
+  /v1/blocks:
+    get:
+      summary: List Blocks
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Block-Outline'
+                  cursor:
+                    type: string
+              examples: {}
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+      operationId: get-v1-blocks
+      description: List blocks. A `cursor` field is returned in the response if more results are available.
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: cursor
+          description: Cursor for next page of results
+      tags:
+        - block
+        - list
+    parameters: []
+  '/v1/blocks/{height}':
+    parameters:
+      - schema:
+          type: integer
+        name: height
+        in: path
+        required: true
+        description: Height for block to fetch
+    get:
+      summary: Block by Height
+      tags:
+        - block
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Block-Detail'
+                  cursor:
+                    type: string
+              examples: {}
+      operationId: get-v1-blocks-height
+      description: |-
+        Retrieves a block with it's transactions at a given block height.
+
+        Transactions for a block are paged. A `cursor` field will be in the response when more results are available
+components:
+  schemas:
+    Hotspot:
+      title: Hotspot
+      type: object
+      x-tags:
+        - hotspot
+      x-examples:
+        hotspot:
+          score_update_height: 273371
+          score: 0.25
+          owner: 14bjnF2dPQGqC267n2t9UKDcVUYkf9d5ycvqb7kTfaoqyiB53uv
+          name: upbeat-taffy-shetland
+          location: 8c2830c604553ff
+          lng: -122.02457609807405
+          lat: 37.91835409220125
+          geocode:
+            short_street: Blackstone Dr
+            short_state: CA
+            short_country: US
+            short_city: Walnut Creek
+            long_street: Blackstone Drive
+            long_state: California
+            long_country: United States
+            long_city: Walnut Creek
+          block: 273399
+          address: 112gVeNVYEnWQ5wynNXFYPckoNsmG4XzUMyfQoLW8ncAbvBxnE32
+      properties:
+        address:
+          type: string
+          description: Address of hotspot
+        location:
+          type: string
+          description: h3 location index
+        owner:
+          type: string
+          example: '"14bjnF2dPQGqC267n2t9UKDcVUYkf9d5ycvqb7kTfaoqyiB53uv"'
+          description: Account address of hotspot owner
+      required:
+        - address
+      description: 'A hotspot creates coverage in a location. In order to earn tokens it needs to be added to the blockchain associated with a given owner wallet. To fully participate a hotspot also needs to be asserted on the blockchain at a specific location. '
+    Block-Outline:
+      title: Block Descriptor
+      type: object
+      description: 'A block buckets togeter a number of transactions and is constructed by the currently elected consensus group. '
+      x-examples:
+        block-273407:
+          transaction_count: 68
+          time: 1585762144
+          prev_hash: MO0CpbcOU2EvE_QN7MWl8rh359j-8klX1jokiDpLEEk
+          height: 273407
+          hash: kLwjSvtn7awlfhlHFGFHy8HL6bMXrmY8mdiYJRoHtAU
+      properties:
+        heiight:
+          type: integer
+        time:
+          type: number
+        hash:
+          type: string
+        prev_hash:
+          type: string
+        transaction_count:
+          type: integer
+      required:
+        - heiight
+        - time
+        - hash
+        - prev_hash
+        - transaction_count
+      x-tags:
+        - block
+        - descriptor
+    Block-Detail:
+      title: Block Details
+      type: object
+      x-tags:
+        - block
+        - descriptor  securitySchemes: {}
+      x-examples: {}
+      description: 'A block buckets togeter a number of transactions and is constructed by the currently elected consensus group. Block details adds a list of transactions to the block '
+      properties:
+        transaction_count:
+          type: integer
+        prev_hash:
+          type: string
+        hash:
+          type: string
+        time:
+          type: number
+        heiight:
+          type: integer
+        transactions:
+          type: array
+          items: {}
+      required:
+        - transaction_count
+        - prev_hash
+        - hash
+        - time
+        - heiight
