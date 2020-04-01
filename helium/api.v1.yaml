@@ -72,6 +72,9 @@ paths:
                       $ref: '#/components/schemas/Block-Detail'
                   cursor:
                     type: string
+                required:
+                  - data
+                  - cursor
               examples: {}
       operationId: get-v1-blocks-height
       description: |-
@@ -80,6 +83,37 @@ paths:
         Transactions for a block are paged. A `cursor` field will be in the response when more results are available
       tags:
         - blocks
+  '/v1/blocks/hash/{hash}':
+    parameters:
+      - schema:
+          type: string
+        name: hash
+        in: path
+        required: true
+        description: Hash of block to fetch
+    get:
+      summary: Block by Hash
+      tags:
+        - blocks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Block-Detail'
+                  cursor:
+                    type: string
+      operationId: get-v1-blocks-hash-hash
+      description: |-
+        Retrieves a block with it's transactions at a given block height.
+
+        Transactions for a block are paged. A `cursor` field will be in the response when more results are available
 components:
   schemas:
     Hotspot:
@@ -120,8 +154,7 @@ components:
         - address
       description: 'A hotspot creates coverage in a location. In order to earn tokens it needs to be added to the blockchain associated with a given owner wallet. To fully participate a hotspot also needs to be asserted on the blockchain at a specific location. '
       x-tags:
-        - hotspots
-        - model
+        - models
     Block-Outline:
       title: Block Descriptor
       type: object
@@ -151,8 +184,7 @@ components:
         - prev_hash
         - transaction_count
       x-tags:
-        - blocks
-        - model
+        - models
     Block-Detail:
       title: Block Details
       type: object
@@ -179,5 +211,4 @@ components:
         - time
         - heiight
       x-tags:
-        - blocks
-        - model
+        - models
